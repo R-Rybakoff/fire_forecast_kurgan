@@ -71,7 +71,7 @@ def process_ndvi_in_batches(
     cell_ids = ndvi["cell_id"].unique()
     cell_ids.sort()
 
-    print(f"▶ Всего cell_id: {len(cell_ids)}")
+    print(f"Всего cell_id: {len(cell_ids)}")
 
     result_chunks = []
 
@@ -89,13 +89,13 @@ def process_ndvi_in_batches(
             f"({round((i + len(batch_ids)) / len(cell_ids) * 100, 2)}%)"
         )
 
-    print("▶ Конкатенация результата...")
+    print("Конкатенация результата...")
     result = pd.concat(result_chunks, ignore_index=True)
 
-    print("▶ Сохранение parquet...")
+    print("Сохранение parquet...")
     result.to_parquet(out_path, index=False)
 
-    print("✅ Готово:", out_path)
+    print("Готово:", out_path)
 
 
 # ============================================================
@@ -108,3 +108,4 @@ if __name__ == "__main__":
         out_path=r"C:\Users\i-ryb\Desktop\fire_forecast_kurgan\data_processed\ndvi_with_lags.parquet",
         batch_size=1500
     )
+

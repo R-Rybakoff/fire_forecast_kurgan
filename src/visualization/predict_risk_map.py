@@ -44,7 +44,7 @@ def get_features(df):
 # MAIN
 # =========================
 def main():
-    print("📥 Loading ML dataset...")
+    print("Loading ML dataset...")
     df = pd.read_parquet(DATASET_PATH)
     df[DATE_COL] = pd.to_datetime(df[DATE_COL])
 
@@ -72,7 +72,7 @@ def main():
         ))
     ])
 
-    print("🚀 Training final model...")
+    print("Training final model...")
     model.fit(X_train, y_train)
 
     # =========================
@@ -86,10 +86,10 @@ def main():
     )
 
     if valid.empty:
-        raise RuntimeError("❌ No valid data available for prediction")
+        raise RuntimeError("No valid data available for prediction")
 
     pred_date = valid[DATE_COL].max()
-    print(f"📅 Using prediction date: {pred_date.date()}")
+    print(f"Using prediction date: {pred_date.date()}")
 
     pred_df = valid[valid[DATE_COL] == pred_date].copy()
     print(f"Prediction rows: {len(pred_df)}")
@@ -106,7 +106,7 @@ def main():
     # =========================
     # LOAD FULL GRID (ВСЯ ОБЛАСТЬ)
     # =========================
-    print("🗺️ Loading full grid...")
+    print("Loading full grid...")
     grid = gpd.read_file(GRID_PATH)
 
     # =========================
@@ -122,7 +122,7 @@ def main():
     # =========================
     # LOAD FIRE FACTS
     # =========================
-    print("🔥 Loading fire facts...")
+    print("Loading fire facts...")
     grid_y = gpd.read_file(GRID_Y_PATH)
 
     fire_cells = grid_y[grid_y["y"] == 1][["cell_id"]]
@@ -140,8 +140,9 @@ def main():
     # SAVE
     # =========================
     grid.to_file(OUT_GEO, driver="GeoJSON")
-    print(f"✅ Saved FULL map with facts: {OUT_GEO}")
+    print(f"Saved FULL map with facts: {OUT_GEO}")
 
 
 if __name__ == "__main__":
     main()
+

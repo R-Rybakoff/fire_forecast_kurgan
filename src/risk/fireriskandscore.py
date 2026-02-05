@@ -247,18 +247,6 @@ if len(fires_pts) > 0:
         ),
     ).add_to(m)
 
-# ---- Сценарные пожары (демо)
-if scenario_fires is not None:
-    folium.GeoJson(
-        json.loads(scenario_fires.to_json()),
-        name="Scenario fires (demo)",
-        marker=folium.CircleMarker(
-            radius=6,
-            color="#1f78b4",
-            fill=True,
-            fill_opacity=1,
-        ),
-    ).add_to(m)
 
 folium.LayerControl(collapsed=False).add_to(m)
 
@@ -268,3 +256,4 @@ m.fit_bounds([[b[1], b[0]], [b[3], b[2]]])
 
 m.save(OUTPUT_HTML)
 print("Map saved:", OUTPUT_HTML)
+

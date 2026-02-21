@@ -21,7 +21,7 @@ VARS = [
 ]
 
 BASE_URL = "https://archive-api.open-meteo.com/v1/era5"
-MAX_WORKERS = 6        # ⬅️ КЛЮЧЕВО
+MAX_WORKERS = 6        # КЛЮЧЕВО
 MAX_RETRIES = 3
 
 # ============================================================
@@ -116,3 +116,4 @@ weather_all.to_parquet(OUT)
 
 print("DONE. Saved:", OUT)
 print(weather_all.head())
+

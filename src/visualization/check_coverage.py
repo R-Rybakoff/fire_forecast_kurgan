@@ -3,7 +3,7 @@ import geopandas as gpd
 GRID_FULL = "data_interim/grids/grid_500m_kurgan.geojson"
 GRID_RISK = "data_processed/visualization/fire_risk_with_y_kurgan.geojson"
 
-print("📥 Loading grids...")
+print("Loading grids...")
 g_full = gpd.read_file(GRID_FULL)
 g_risk = gpd.read_file(GRID_RISK)
 
@@ -58,4 +58,5 @@ else:
     print("Геометрия области неполная (ошибка сборки).")
 
 print("ℹ Ячейки без fire_risk = область вне применимости модели.")
+
 

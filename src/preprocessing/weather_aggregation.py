@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 import time
 
-# ============================================================
+
 GRID = Path("data_interim/grids/grid_weather_10km.geojson")
 OUT = Path("data_interim/weather_processed/weather_era5_openmeteo.parquet")
 OUT.parent.mkdir(parents=True, exist_ok=True)
@@ -24,7 +24,7 @@ BASE_URL = "https://archive-api.open-meteo.com/v1/era5"
 MAX_WORKERS = 6        # КЛЮЧЕВО
 MAX_RETRIES = 3
 
-# ============================================================
+
 grid = gpd.read_file(GRID).to_crs(4326)
 grid["lon"] = grid.geometry.centroid.x
 grid["lat"] = grid.geometry.centroid.y
@@ -36,7 +36,6 @@ else:
     weather_all = pd.DataFrame()
     done_ids = set()
 
-# ============================================================
 def fetch_weather(row):
     lat, lon, wid = row.lat, row.lon, row.weather_id
     frames = []
@@ -82,7 +81,6 @@ def fetch_weather(row):
 
     return None
 
-# ============================================================
 rows = grid[~grid.weather_id.isin(done_ids)].itertuples(index=False)
 
 records = []
@@ -101,7 +99,7 @@ with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
             weather_all.to_parquet(OUT)
             records = []
 
-# ============================================================
+
 if records:
     weather_all = pd.concat([weather_all, pd.concat(records)], ignore_index=True)
 
@@ -116,4 +114,5 @@ weather_all.to_parquet(OUT)
 
 print("DONE. Saved:", OUT)
 print(weather_all.head())
+
 

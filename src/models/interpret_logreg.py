@@ -5,9 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 
-# =========================
-# PATHS
-# =========================
+
 DATASET_PATH = "data_processed/ml_dataset_ndvi_weather_features.parquet"
 
 TARGET = "y"
@@ -15,10 +13,6 @@ DATE_COL = "date"
 
 TRAIN_END = "2022-12-31"
 
-
-# =========================
-# MAIN
-# =========================
 def main():
     print("Loading dataset...")
     df = pd.read_parquet(DATASET_PATH)
@@ -77,3 +71,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -4,9 +4,8 @@ import geopandas as gpd
 import folium
 from shapely.geometry import box, Point
 
-# =========================
 # НАСТРОЙКИ
-# =========================
+
 
 TOP_Q = 0.90
 PRIORITY_GRID_STEP_M = 5000   # 5 км
@@ -25,9 +24,9 @@ date = pd.to_datetime(FORECAST_DATE)
 
 print(f"Forecast date: {FORECAST_DATE}")
 
-# =========================
+
 # ЗАГРУЗКА ДАННЫХ
-# =========================
+
 
 gdf = gpd.read_file(GRID_GEOJSON)
 ml = pd.read_parquet(ML_DATA)
@@ -36,9 +35,9 @@ fires_all = pd.read_parquet(FIRES_DATA)
 ml["date"] = pd.to_datetime(ml["date"])
 fires_all["date"] = pd.to_datetime(fires_all["date"])
 
-# =========================
+
 # FIRE RISK (ПРОГНОЗ)
-# =========================
+
 
 ml_d = (
     ml[ml["date"] == date]
@@ -54,9 +53,9 @@ gdf = gdf.merge(
 
 gdf["fire_risk"] = gdf["fire_risk"].fillna(0.0)
 
-# =========================
+
 # ФАКТИЧЕСКИЕ ПОЖАРЫ
-# =========================
+
 
 fires_d = fires_all[fires_all["date"] == date][["cell_id"]].copy()
 
@@ -75,16 +74,15 @@ gdf["y"] = gdf["y"].astype(int)
 
 print("Real fire cells on date:", int(gdf["y"].sum()))
 
-# =========================
 # TOP-Q ЗОНЫ РИСКА
-# =========================
+
 
 thr = gdf["fire_risk"].quantile(TOP_Q)
 high = gdf[gdf["fire_risk"] >= thr].copy()
 
-# =========================
+
 # АГРЕГАЦИЯ В КРУПНЫЕ КВАДРАТЫ
-# =========================
+
 
 high_m = high.to_crs(32642)
 cent = high_m.geometry.centroid
@@ -117,9 +115,9 @@ zones = gpd.GeoDataFrame(zones, geometry="geometry", crs=32642).to_crs(4326)
 
 print("Priority zones:", len(zones))
 
-# =========================
+
 # ПОЖАРЫ КАК ТОЧКИ
-# =========================
+
 
 fires_pts = gdf[gdf["y"] == 1].copy()
 
@@ -131,9 +129,7 @@ if len(fires_pts) > 0:
 
 print("Real fire points:", len(fires_pts))
 
-# =========================
-# СЦЕНАРНЫЕ ПОЖАРЫ (ДЕМО)
-# =========================
+
 
 scenario_fires = None
 SCENARIO_FIRES_PER_ZONE = 2
@@ -152,15 +148,15 @@ if len(fires_pts) == 0:
         crs=4326
     )
 
-# =========================
+
 # ПОДЛОЖКА: КУРГАНСКАЯ ОБЛАСТЬ
-# =========================
+
 
 kurgan = gpd.read_file(KURGAN_BOUNDARY).to_crs(4326)[["geometry"]]
 
-# =========================
+
 # КАРТА
-# =========================
+
 
 center = kurgan.geometry.union_all().centroid
 
@@ -256,4 +252,5 @@ m.fit_bounds([[b[1], b[0]], [b[3], b[2]]])
 
 m.save(OUTPUT_HTML)
 print("Map saved:", OUTPUT_HTML)
+
 

@@ -19,9 +19,7 @@ import rasterio.mask
 from shapely.geometry import box
 from tqdm import tqdm
 
-# ==========================
-# CONFIG
-# ==========================
+ 
 
 GRID_PATH = "data_processed/grid_with_y_kurgan.geojson"
 MODIS_DIR = "data_raw/modis_ndvi"
@@ -31,20 +29,14 @@ OUTPUT_PATH = "data_processed/dataset_fire_ndvi_2019_2023.parquet"
 CRS_GRID = "EPSG:32642"
 CELL_SIZE = 500
 
-# ==========================
-# STEP 1 — LOAD GRID
-# ==========================
-
+ 
 print("Loading grid...")
 grid = gpd.read_file(GRID_PATH)
 assert "cell_id" in grid.columns
 print("Grid cells:", len(grid))
 print("Grid CRS:", grid.crs)
 
-# ==========================
-# STEP 2 — READ NDVI FROM HDF
-# ==========================
-
+ 
 def read_ndvi_layer(hdf_path):
     layer = (
         f'HDF4_EOS:EOS_GRID:"{hdf_path}":'
@@ -100,10 +92,7 @@ ndvi["ndvi_mean"] = ndvi["ndvi_mean"].astype("float32")
 print("NDVI shape:", ndvi.shape)
 print("NDVI date range:", ndvi.date.min(), "→", ndvi.date.max())
 
-# ==========================
-# STEP 3 — LOAD FIRE LABELS
-# ==========================
-
+ 
 print("Loading fire labels...")
 fires = pd.read_parquet(FIRES_PATH)
 
@@ -118,10 +107,7 @@ fires["date"] = pd.to_datetime(fires["date"])
 print("Fire rows:", len(fires))
 print("Fire date range:", fires.date.min(), "→", fires.date.max())
 
-# ==========================
-# STEP 4 — MEMORY SAFE LABELING
-# ==========================
-
+ 
 print("Indexing fire events...")
 fire_index = set(
     zip(
@@ -138,10 +124,7 @@ ndvi["y"] = [
 
 ndvi["y"] = ndvi["y"].astype("int8")
 
-# ==========================
-# STEP 5 — FINAL CHECKS
-# ==========================
-
+ 
 print("\nFINAL DATASET CHECKS")
 print("Shape:", ndvi.shape)
 print("Columns:", ndvi.columns.tolist())
@@ -149,10 +132,7 @@ print("Fire share:", ndvi.y.mean())
 print("NDVI NaN share:", ndvi.ndvi_mean.isna().mean())
 print("NDVI stats:")
 print(ndvi.ndvi_mean.describe())
-
-# ==========================
-# STEP 6 — SAVE
-# ==========================
-
+ 
 ndvi.to_parquet(OUTPUT_PATH, index=False)
 print("\nSaved:", OUTPUT_PATH)
+

@@ -4,10 +4,8 @@ import geopandas as gpd
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
-
-# =========================
-# PATHS
-# =========================
+ 
+ 
 DATASET_PATH = "data_processed/ml_dataset_ndvi_weather_features.parquet"
 
 # ПОЛНАЯ сетка области (ОСНОВА КАРТЫ)
@@ -26,10 +24,7 @@ TRAIN_END = "2022-12-31"
 # желаемая дата (если нет данных — берётся ближайшая <=)
 PREDICT_DATE = "2023-05-15"
 
-
-# =========================
-# UTILS
-# =========================
+ 
 def get_features(df):
     return [
         c for c in df.columns
@@ -39,10 +34,7 @@ def get_features(df):
         or c.startswith("wind_mean")
     ]
 
-
-# =========================
-# MAIN
-# =========================
+ 
 def main():
     print("Loading ML dataset...")
     df = pd.read_parquet(DATASET_PATH)
@@ -51,9 +43,7 @@ def main():
     features = get_features(df)
     print(f"Total features: {len(features)}")
 
-    # =========================
-    # TRAIN FINAL MODEL
-    # =========================
+ 
     train_df = df[df[DATE_COL] <= TRAIN_END]
     train_df = train_df.dropna(subset=features + [TARGET])
 
@@ -74,10 +64,7 @@ def main():
 
     print("Training final model...")
     model.fit(X_train, y_train)
-
-    # =========================
-    # SELECT VALID DATE
-    # =========================
+ 
     target_date = pd.to_datetime(PREDICT_DATE)
 
     valid = (
@@ -93,25 +80,18 @@ def main():
 
     pred_df = valid[valid[DATE_COL] == pred_date].copy()
     print(f"Prediction rows: {len(pred_df)}")
-
-    # =========================
-    # PREDICT RISK (ТОЛЬКО ТАМ, ГДЕ МОЖНО)
-    # =========================
+ 
     pred_df["fire_risk"] = model.predict_proba(
         pred_df[features]
     )[:, 1]
 
     risk_table = pred_df[["cell_id", "fire_risk"]]
 
-    # =========================
-    # LOAD FULL GRID (ВСЯ ОБЛАСТЬ)
-    # =========================
+ 
     print("Loading full grid...")
     grid = gpd.read_file(GRID_PATH)
 
-    # =========================
-    # MERGE RISK (LEFT JOIN — КЛЮЧЕВО!)
-    # =========================
+ 
     grid = grid.merge(
         risk_table,
         on="cell_id",
@@ -119,9 +99,7 @@ def main():
         validate="1:1"
     )
 
-    # =========================
-    # LOAD FIRE FACTS
-    # =========================
+ 
     print("Loading fire facts...")
     grid_y = gpd.read_file(GRID_Y_PATH)
 
@@ -135,14 +113,12 @@ def main():
     )
 
     grid["fire_fact"] = grid["fire_fact"].fillna(0).astype(int)
-
-    # =========================
-    # SAVE
-    # =========================
+ 
     grid.to_file(OUT_GEO, driver="GeoJSON")
     print(f"Saved FULL map with facts: {OUT_GEO}")
 
 
 if __name__ == "__main__":
     main()
+
 

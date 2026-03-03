@@ -2,8 +2,7 @@ import pandas as pd
 
 DATASET_PATH = "data_processed/ml_dataset_ndvi_weather.parquet"
 OUT_PATH = "data_processed/ml_dataset_ndvi_weather_features.parquet"
-
-# canonical weather names we want to use дальше
+ 
 WEATHER_RENAME = {
     "temperature_2m_mean": "t2m_mean",
     "temperature_2m_max": "t2m_max",
@@ -28,7 +27,7 @@ def main():
     # normalize date
     df["date"] = pd.to_datetime(df["date"]).dt.normalize()
 
-    # 🔑 normalize weather column names INSIDE dataset
+    #  normalize weather column names INSIDE dataset
     for old, new in WEATHER_RENAME.items():
         if old in df.columns and new not in df.columns:
             df = df.rename(columns={old: new})
@@ -46,17 +45,15 @@ def main():
     # feature engineering
     for col, cfg in WEATHER_COLS.items():
         grp = df.groupby("weather_id")[col]
-
-        # lags
+ 
         for lag in LAGS:
             df[f"{col}_lag_{lag}"] = grp.shift(lag)
-
-        # rolling stats (strictly past)
+ t)
         for win in ROLLING_WINDOWS:
             df[f"{col}_mean_{win}"] = grp.shift(1).rolling(win).mean()
             df[f"{col}_max_{win}"] = grp.shift(1).rolling(win).max()
 
-        # rolling sum for precipitation
+  
         if cfg["sum"]:
             df[f"{col}_sum_7"] = grp.shift(1).rolling(7).sum()
 
@@ -66,3 +63,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

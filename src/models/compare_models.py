@@ -6,9 +6,7 @@ from sklearn.metrics import roc_auc_score, average_precision_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 
-# =========================
-# PATHS
-# =========================
+
 BASELINE_PATH = "data_processed/ml_dataset.parquet"
 FULL_PATH = "data_processed/ml_dataset_ndvi_weather_features.parquet"
 
@@ -19,9 +17,6 @@ TRAIN_END = "2022-12-31"
 TEST_START = "2023-01-01"
 
 
-# =========================
-# UTILS
-# =========================
 def evaluate(y_true, y_score, name):
     roc = roc_auc_score(y_true, y_score)
     pr = average_precision_score(y_true, y_score)
@@ -49,9 +44,7 @@ def get_feature_columns(df, mode):
     raise ValueError("Unknown mode")
 
 
-# =========================
-# MAIN
-# =========================
+
 def main():
     print("Loading datasets...")
     df_base = pd.read_parquet(BASELINE_PATH)
@@ -104,17 +97,12 @@ def main():
         ))
     ])
 
-    # =========================
-    # BASELINE
-    # =========================
+
     print("\nTraining NDVI-only model...")
     model.fit(Xb_train, yb_train)
     yb_pred = model.predict_proba(Xb_test)[:, 1]
     evaluate(yb_test, yb_pred, "NDVI-only")
 
-    # =========================
-    # FULL
-    # =========================
     print("\nTraining NDVI + Weather model...")
     model.fit(Xf_train, yf_train)
     yf_pred = model.predict_proba(Xf_test)[:, 1]
@@ -123,3 +111,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

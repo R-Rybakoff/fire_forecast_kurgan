@@ -3,9 +3,7 @@ import numpy as np
 from typing import Iterable
 
 
-# ============================================================
-# 1. ФУНКЦИЯ РАСЧЁТА TIME-BASED NDVI ЛАГОВ
-# ============================================================
+ 
 
 def compute_ndvi_lags(
     df: pd.DataFrame,
@@ -45,10 +43,7 @@ def compute_ndvi_lags(
     return df
 
 
-
-# ============================================================
-# 2. BATCH-PROCESSING ПО cell_id (MEMORY-SAFE)
-# ============================================================
+ 
 
 def process_ndvi_in_batches(
     ndvi_path: str,
@@ -97,10 +92,7 @@ def process_ndvi_in_batches(
 
     print("Готово:", out_path)
 
-
-# ============================================================
-# 3. ЗАПУСК
-# ============================================================
+ 
 
 if __name__ == "__main__":
     process_ndvi_in_batches(
@@ -108,4 +100,5 @@ if __name__ == "__main__":
         out_path=r"C:\Users\i-ryb\Desktop\fire_forecast_kurgan\data_processed\ndvi_with_lags.parquet",
         batch_size=1500
     )
+
 

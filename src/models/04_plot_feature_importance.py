@@ -6,9 +6,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 
-# =========================
-# PATHS
-# =========================
+
 DATASET_PATH = "data_processed/ml_dataset_ndvi_weather_features.parquet"
 OUT_FIG = "data_processed/logreg_top10_features.png"
 
@@ -63,9 +61,7 @@ def main():
 
     coef_df = coef_df.sort_values("coef")
 
-    # =========================
-    # PLOT
-    # =========================
+
     plt.figure(figsize=(8, 5))
     plt.barh(coef_df["feature"], coef_df["coef"])
     plt.axvline(0)
@@ -80,3 +76,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

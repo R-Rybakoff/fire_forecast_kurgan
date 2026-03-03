@@ -1,9 +1,6 @@
 import pandas as pd
 
-
-# ============================================================
-# 1. СБОР ML-ДАТАСЕТА
-# ============================================================
+ 
 
 def build_ml_dataset(
     ndvi_path: str,
@@ -31,10 +28,7 @@ def build_ml_dataset(
     fire["cell_id"] = fire["cell_id"].astype("int32")
 
     fire["fire"] = fire["fire"].astype("int8")
-
-    # --------------------------------------------------------
-    # 2. СДВИГ ЦЕЛЕВОЙ ПЕРЕМЕННОЙ (D+1)
-    # --------------------------------------------------------
+ 
 
     fire["date_prev"] = fire["date"] - pd.Timedelta(days=1)
 
@@ -44,10 +38,7 @@ def build_ml_dataset(
         "fire"
     ]].rename(columns={"date_prev": "date"})
 
-    # --------------------------------------------------------
-    # 3. MERGE (БЕЗ УТЕЧЕК)
-    # --------------------------------------------------------
-
+ 
     print("Объединение NDVI и fire (D → D+1)...")
 
     dataset = ndvi.merge(
@@ -56,19 +47,12 @@ def build_ml_dataset(
         how="left"
     )
 
-    # --------------------------------------------------------
-    # 4. FIRE = 0, ЕСЛИ НЕТ ЗАПИСИ
-    # --------------------------------------------------------
-
+ 
     dataset["fire"] = dataset["fire"].fillna(0).astype("int8")
 
     return dataset
 
-
-# ============================================================
-# 2. ЗАПУСК
-# ============================================================
-
+ 
 if __name__ == "__main__":
 
     ndvi_path = r"C:\Users\i-ryb\Desktop\fire_forecast_kurgan\data_processed\ndvi_full_features.parquet"
@@ -89,3 +73,4 @@ df = pd.read_parquet(
 
 print(df.shape)
 print(df["fire"].value_counts(normalize=True))
+

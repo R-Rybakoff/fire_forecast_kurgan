@@ -8,9 +8,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 
 
-# ============================================================
+
 # 1. ЗАГРУЗКА ДАННЫХ
-# ============================================================
+
 
 print("Загрузка ML-датасета...")
 df = pd.read_parquet(
@@ -19,9 +19,9 @@ df = pd.read_parquet(
 
 df["date"] = pd.to_datetime(df["date"])
 
-# ============================================================
+
 # 2. ВРЕМЕННОЕ РАЗБИЕНИЕ
-# ============================================================
+
 
 train_df = df[df["date"].dt.year <= 2021]
 valid_df = df[df["date"].dt.year == 2022]
@@ -32,9 +32,7 @@ print("train:", train_df.shape)
 print("valid:", valid_df.shape)
 print("test :", test_df.shape)
 
-# ============================================================
 # 3. ПРИЗНАКИ И ЦЕЛЬ
-# ============================================================
 
 features = [
     "ndvi_mean",
@@ -56,9 +54,9 @@ y_valid = valid_df["fire"]
 X_test  = test_df[features]
 y_test  = test_df["fire"]
 
-# ============================================================
+
 # 4. PIPELINE: SCALER + LOGREG
-# ============================================================
+
 
 model = Pipeline(
     steps=[
@@ -76,16 +74,14 @@ model = Pipeline(
 )
 
 
-# ============================================================
 # 5. ОБУЧЕНИЕ
-# ============================================================
+
 
 print("Обучение модели...")
 model.fit(X_train, y_train)
 
-# ============================================================
 # 6. ОЦЕНКА
-# ============================================================
+
 
 def evaluate(X, y, name):
     proba = model.predict_proba(X)[:, 1]
@@ -99,3 +95,4 @@ print("\nРезультаты:")
 evaluate(X_train, y_train, "Train")
 evaluate(X_valid, y_valid, "Valid")
 evaluate(X_test,  y_test,  "Test")
+

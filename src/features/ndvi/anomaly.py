@@ -1,9 +1,6 @@
 import pandas as pd
 
-
-# ============================================================
-# 1. NDVI ANOMALY
-# ============================================================
+ 
 
 def compute_ndvi_anomaly(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -42,9 +39,7 @@ def compute_ndvi_anomaly(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# ============================================================
-# 2. ЗАПУСК
-# ============================================================
+ 
 
 if __name__ == "__main__":
 
@@ -72,3 +67,4 @@ print(
         "ndvi_anomaly"
     ]].head(10)
 )
+
